@@ -18,6 +18,15 @@
       position: relative;
     }
 
+    #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99998; }
+
+    /* شاشة القفل */
+    #lock-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #4b3869, #7c6ba8, #5e4b8b); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 20px; }
+    .lock-box { background: rgba(255, 255, 255, 0.16); backdrop-filter: blur(15px); padding: 35px 25px; border-radius: 25px; border: 2px solid rgba(255, 255, 255, 0.3); width: 100%; max-width: 370px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25); }
+    .lock-box input { width: 85%; padding: 12px; border-radius: 50px; border: none; outline: none; text-align: center; font-size: 1.1rem; margin: 15px 0; }
+    .lock-box button { background: linear-gradient(45deg, #ff6b9d, #ff8eb3); color: white; border: none; padding: 12px 35px; border-radius: 50px; font-size: 1.05rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4); }
+    #error-msg { color: #ffd6e7; font-size: 0.9rem; margin-top: 12px; display: none; font-weight: bold; }
+
     .hearts-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
     .floating-heart { position: absolute; opacity: 0.25; animation: floatUp 8s infinite ease-in-out; user-select: none; }
     @keyframes floatUp { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(8deg); } }
@@ -66,7 +75,6 @@
       transition: 0.25s;
     }
     .nav-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6); }
-
     .section-box {
       background: rgba(255, 255, 255, 0.1);
       border: 1.5px solid rgba(255, 255, 255, 0.25);
@@ -77,6 +85,7 @@
     .section-header { margin-bottom: 22px; padding-bottom: 12px; border-bottom: 1px dashed rgba(255, 214, 231, 0.4); }
     .section-title { font-size: 1.5rem; font-weight: 900; color: #ffd6e7; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
     .section-desc { font-size: 0.92rem; color: #f3e8ff; margin-top: 4px; }
+
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -126,6 +135,27 @@
     .card-title { font-size: 1.1rem; font-weight: 900; color: #fff; margin-bottom: 6px; }
     .card-desc { font-size: 0.9rem; line-height: 1.6; color: #f3e8ff; }
 
+    /* صندوق Coming Soon */
+    .coming-soon-box {
+      padding: 35px 15px;
+      text-align: center;
+    }
+    .coming-soon-icon {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 10px;
+      animation: bounce 2s infinite ease-in-out;
+    }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .coming-soon-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #ffd6e7;
+      letter-spacing: 1px;
+      direction: ltr;
+    }
+
     .lightbox {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px);
@@ -138,9 +168,17 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    .footer-sign {
-      margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.2);
-      font-family: 'Poppins', sans-serif; font-size: 0.95rem; color: #ffd6e7; direction: ltr;
+    .light-signature {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffd6e7;
+      direction: ltr;
+      text-shadow: 0 2px 10px rgba(255, 107, 157, 0.5);
+      letter-spacing: 0.4px;
     }
 
     @media (max-width: 600px) {
@@ -152,6 +190,31 @@
 </head>
 <body>
 
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- شاشة القفل -->
+  <div id="lock-screen">
+    <div class="lock-box">
+      <div style="font-size: 3.2rem; margin-bottom: 10px;">👑🔒</div>
+      <p style="font-size: 1.05rem; color: #fff; font-weight: bold; margin-bottom: 4px;">
+        حطي الباسوورد عشان تدخلي ✨
+      </p>
+      <p style="font-size: 0.95rem; color: #ffd6e7; direction: ltr; letter-spacing: 1px; margin-bottom: 10px;">
+        I love you 💜
+      </p>
+      <input type="password" id="pass-input" placeholder="اكتبي الباسوورد..." onkeyup="if(event.key==='Enter') checkPass()">
+      <br>
+      <button onclick="checkPass()">دخول 🐼💜</button>
+      <p style="margin-top: 15px; font-size: 0.85rem; color: #ffd6e7; cursor: pointer; text-decoration: underline;" 
+         onclick="document.getElementById('hint-msg').style.display='block'">
+        هل نسيتي كلمة السر..؟ 🤔
+      </p>
+      <p id="hint-msg" style="display: none; margin-top: 10px; font-size: 0.9rem; color: #fff; background: rgba(255,255,255,0.18); padding: 10px 14px; border-radius: 14px; border: 1px dashed #ffd6e7;">
+        تلميح: هو تاريخ ميلاد أمزز وأجمل شخص فالكون 🐼💜
+      </p>
+      <p id="error-msg">الباسوورد غلط يروحي، حاولي مرة ثانية! 🐼💔</p>
+    </div>
+  </div>
   <div class="hearts-bg">
     <span class="floating-heart" style="top: 10%; left: 10%; font-size: 24px;">💜</span>
     <span class="floating-heart" style="top: 20%; right: 12%; font-size: 28px; animation-delay: 1s;">🐼</span>
@@ -168,8 +231,9 @@
     <div class="nav-tabs">
       <a href="#sec-matching" class="nav-btn">1. تطقيماتنا 🐼💜</a>
       <a href="#sec-trends" class="nav-btn">2. ترنداتنا 🎬🔥</a>
-      <a href="#sec-memories" class="nav-btn">3. ذكرياتنا 📸✨</a>
+      <a href="#sec-coming" class="nav-btn">3. Coming Soon ✨</a>
     </div>
+
     <!-- ================= القسم الأول: تطقيماتنا ================= -->
     <div class="section-box" id="sec-matching">
       <div class="section-header">
@@ -260,60 +324,50 @@
       </div>
     </div>
 
-    <!-- ================= القسم الثالث: ذكرياتنا ================= -->
-    <div class="section-box" id="sec-memories">
+    <!-- ================= القسم الثالث: Coming Soon ================= -->
+    <div class="section-box" id="sec-coming">
       <div class="section-header">
-        <h2 class="section-title">قسم ذكرياتنا الحلوة 📸✨</h2>
-        <p class="section-desc">لحظات وصور محفورة في القلب للأبد 🌙💜</p>
+        <h2 class="section-title" style="direction: ltr;">Coming Soon ✨⏳</h2>
+        <p class="section-desc">أشياء حلوة ومفاجآت جاية بالطريق لنا سوا 🐼💜</p>
       </div>
-      <div class="gallery-grid">
-
-        <div class="trend-card">
-          <div class="img-box" onclick="openLightbox('mem1.jpg')">
-            <img src="mem1.jpg" alt="ذكرى 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="placeholder-art" style="display: none;">
-              <span>📸💌</span>
-              <small>صورة الذكرى الأولى (mem1.jpg)</small>
-            </div>
-          </div>
-          <div class="card-body">
-            <div>
-              <div class="card-date">💜 ذكرى ما تتنسى</div>
-              <div class="card-title">أجمل لحظة بيننا 🌸</div>
-              <p class="card-desc">وصف الذكرى الأولى هنا ✨</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="trend-card">
-          <div class="img-box" onclick="openLightbox('mem2.jpg')">
-            <img src="mem2.jpg" alt="ذكرى 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="placeholder-art" style="display: none;">
-              <span>🧸🌙</span>
-              <small>صورة الذكرى الثانية (mem2.jpg)</small>
-            </div>
-          </div>
-          <div class="card-body">
-            <div>
-              <div class="card-date">💜 ذكرى خاصة</div>
-              <div class="card-title">ضحكتك اللي تنور دنيتي 👑</div>
-              <p class="card-desc">وصف الذكرى الثانية هنا 🐼</p>
-            </div>
-          </div>
-        </div>
-
+      <div class="coming-soon-box">
+        <span class="coming-soon-icon">👑🔒✨</span>
+        <div class="coming-soon-text">Coming Soon... 💜</div>
       </div>
     </div>
 
-    <div class="footer-sign">Light & My Princess — Forever & Always 🐼👑💜</div>
+    <!-- التوقيعات -->
+    <p class="light-signature">Don't forget, Light will love you forever, to the moon and back 🌙👑💜</p>
+    <div style="margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; direction: ltr;">
+      <div style="text-align: center;">
+        <p style="font-size: 0.85rem; color: #f3e8ff; margin-bottom: 8px; font-family: 'Poppins', sans-serif;">Signature by Light 👑</p>
+        <img id="sig-light" src="https://githubusercontent.com" crossorigin="anonymous" alt="Light" style="height: 65px; width: auto; display: block; margin: 0 auto;">
+      </div>
+      <div style="text-align: center;">
+        <p style="font-size: 0.85rem; color: #f3e8ff; margin-bottom: 8px; font-family: 'Poppins', sans-serif;">Signature by My Princess 💜</p>
+        <img id="sig-princess" src="https://githubusercontent.com" crossorigin="anonymous" alt="Princess" style="height: 65px; width: auto; display: block; margin: 0 auto;">
+      </div>
+    </div>
   </div>
-
+  <!-- نافذة تكبير الصورة -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <span class="lightbox-close">&times;</span>
     <img id="lightbox-img" src="" alt="تكبير الصورة">
   </div>
 
   <script>
+    // شاشة القفل
+    function checkPass() {
+      const val = document.getElementById("pass-input").value.trim();
+      if (val === "632007" || val === "362007") {
+        document.getElementById("lock-screen").style.display = "none";
+        launchConfetti();
+      } else {
+        document.getElementById("error-msg").style.display = "block";
+      }
+    }
+
+    // تكبير الصورة
     function openLightbox(src) {
       const lb = document.getElementById('lightbox');
       const img = document.getElementById('lightbox-img');
@@ -325,8 +379,40 @@
       document.getElementById('lightbox').style.display = 'none';
     }
 
+    // القصاصات الملونة
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function launchConfetti() {
+      const colors = ['#ff6b9d', '#ffd6e7', '#ffd700', '#e040fb', '#ffffff'];
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: canvas.width / 2, y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 15, vy: (Math.random() - 0.7) * 16,
+          size: Math.random() * 8 + 4, color: colors[Math.floor(Math.random() * colors.length)], alpha: 1
+        });
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, idx) => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.35; p.alpha -= 0.012;
+        ctx.globalAlpha = Math.max(0, p.alpha); ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+        if (p.alpha <= 0) particles.splice(idx, 1);
+      });
+      requestAnimationFrame(animateConfetti);
+    }
+    animateConfetti();
+
+    // قلوب عند الضغط
     document.addEventListener("click", function(e) {
-      if (e.target.closest('.img-box') || e.target.closest('.nav-btn')) return;
+      if (e.target.closest('.img-box') || e.target.closest('.nav-btn') || e.target.closest('#lock-screen')) return;
       const icons = ["💜", "✨", "🐼", "🩷"];
       const heart = document.createElement("span");
       heart.innerText = icons[Math.floor(Math.random() * icons.length)];
@@ -344,6 +430,48 @@
       }, 20);
       setTimeout(() => heart.remove(), 1000);
     });
+
+    // تنظيف خلفية التوقيعات وجعلها بيضاء نقية
+    function cleanSignature(imgId) {
+      const img = document.getElementById(imgId);
+      const process = () => {
+        const c = document.createElement('canvas');
+        const ctx = c.getContext('2d');
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, c.width, c.height);
+        const d = data.data;
+        let minX = c.width, minY = c.height, maxX = 0, maxY = 0;
+
+        for (let y = 0; y < c.height; y++) {
+          for (let x = 0; x < c.width; x++) {
+            const i = (y * c.width + x) * 4;
+            const brightness = (d[i] + d[i+1] + d[i+2]) / 3;
+            if (brightness > 170) {
+              d[i+3] = 0;
+            } else {
+              d[i] = 255; d[i+1] = 255; d[i+2] = 255; d[i+3] = 255;
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+        ctx.putImageData(data, 0, 0);
+        if (maxX > minX && maxY > minY) {
+          const trim = document.createElement('canvas');
+          trim.width = maxX - minX + 10;
+          trim.height = maxY - minY + 10;
+          trim.getContext('2d').drawImage(c, minX - 5, minY - 5, trim.width, trim.height, 0, 0, trim.width, trim.height);
+          img.src = trim.toDataURL();
+        }
+      };
+      if (img.complete) process(); else img.onload = process;
+    }
+    cleanSignature('sig-light');
+    cleanSignature('sig-princess');
   </script>
 </body>
 </html>
